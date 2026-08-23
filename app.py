@@ -43,7 +43,7 @@ def logout():
 
 @app.route("/profile")
 def profile():
-    return "Profile page — coming in Step 4"
+    return "Profile page — coming in Step 4"    
 
 
 @app.route("/expenses/add")
