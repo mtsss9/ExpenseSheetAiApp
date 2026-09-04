@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Spendly{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-section">
+    <div class="dashboard-container">
+
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Welcome back, {{ user_name }}</h1>
+            <p class="dashboard-subtitle">
+                Total spent: <strong>${{ "%.2f"|format(total) }}</strong> across {{ expenses|length }} expenses
+            </p>
+        </div>
+
+        {% if expenses %}
+        <div class="expense-table-wrap">
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Category</th>
+                        <th>Description</th>
+                        <th class="amount-col">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.date }}</td>
+                        <td><span class="category-pill">{{ expense.category }}</span></td>
+                        <td>{{ expense.description or "—" }}</td>
+                        <td class="amount-col">${{ "%.2f"|format(expense.amount) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="dashboard-empty">No expenses yet.</p>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
