@@ -1,9 +1,9 @@
 import os
 
-from flask import Flask, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from database.db import get_db, init_db, seed_db
+from database.db import get_db, get_user_by_email, init_db, seed_db
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
@@ -69,14 +69,11 @@ def login():
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
 
-        conn = get_db()
-        user = conn.execute(
-            "SELECT id, name, password_hash FROM users WHERE email = ?", (email,)
-        ).fetchone()
-        conn.close()
+        user = get_user_by_email(email)
 
         if user is None or not check_password_hash(user["password_hash"], password):
-            return render_template("login.html", error="Invalid email or password")
+            flash("Invalid email or password.")
+            return redirect(url_for("login"))
 
         session["user_id"] = user["id"]
         session["user_name"] = user["name"]
