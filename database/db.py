@@ -33,17 +33,6 @@ def get_user_by_id(user_id):
     return user
 
 
-def get_expense_summary(user_id):
-    conn = get_db()
-    summary = conn.execute(
-        "SELECT COUNT(*) AS count, COALESCE(SUM(amount), 0) AS total "
-        "FROM expenses WHERE user_id = ?",
-        (user_id,),
-    ).fetchone()
-    conn.close()
-    return summary
-
-
 def init_db():
     conn = get_db()
     conn.execute(

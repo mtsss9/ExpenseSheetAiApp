@@ -3,14 +3,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from database.db import (
-    get_db,
-    get_expense_summary,
-    get_user_by_email,
-    get_user_by_id,
-    init_db,
-    seed_db,
-)
+from database.db import get_db, get_user_by_email, get_user_by_id, init_db, seed_db
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
@@ -109,17 +102,6 @@ def dashboard():
     )
 
 
-@app.route("/profile")
-def profile():
-    if "user_id" not in session:
-        return redirect(url_for("login"))
-
-    user = get_user_by_id(session["user_id"])
-    summary = get_expense_summary(session["user_id"])
-
-    return render_template("profile.html", user=user, summary=summary)
-
-
 @app.route("/terms")
 def terms():
     return render_template("terms.html")
@@ -138,6 +120,29 @@ def privacy():
 def logout():
     session.clear()
     return redirect(url_for("landing"))
+
+
+@app.route("/profile")
+def profile():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user = get_user_by_id(session["user_id"])
+
+    conn = get_db()
+    summary = conn.execute(
+        "SELECT COUNT(*) AS expense_count, COALESCE(SUM(amount), 0) AS total "
+        "FROM expenses WHERE user_id = ?",
+        (session["user_id"],),
+    ).fetchone()
+    conn.close()
+
+    return render_template(
+        "profile.html",
+        user=user,
+        total=summary["total"],
+        expense_count=summary["expense_count"],
+    )
 
 
 @app.route("/expenses/add")
