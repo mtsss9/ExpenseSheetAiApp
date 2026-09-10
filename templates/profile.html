@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Profile — Spendly{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-section">
+    <div class="dashboard-container">
+
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">{{ user.name }}</h1>
+            <p class="dashboard-subtitle">{{ user.email }}</p>
+        </div>
+
+        <div class="profile-stats">
+            <div class="stat-tile">
+                <span class="stat-label">Member since</span>
+                <span class="stat-value">{{ user.created_at[:10] }}</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-label">Total spent</span>
+                <span class="stat-value">${{ "%.2f"|format(total) }}</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-label">Expenses logged</span>
+                <span class="stat-value">{{ expense_count }}</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
