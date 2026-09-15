@@ -3,7 +3,7 @@ import os
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from database.db import get_db, get_user_by_email, get_user_by_id, init_db, seed_db
+from database.db import get_db, get_user_by_email, init_db, seed_db
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
@@ -127,10 +127,14 @@ def profile():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    user = get_user_by_id(session["user_id"])
+    # Step 4: static, hardcoded UI data — real queries are wired up in Step 5
+    user = {
+        "name": session["user_name"],
+        "email": "you@example.com",
+        "created_at": "2026-01-15",
+    }
     initials = "".join(part[0].upper() for part in user["name"].split()[:2])
 
-    # Step 4: static, hardcoded UI data — real queries are wired up in Step 5
     stats = {
         "total_spent": 342.49,
         "transaction_count": 12,

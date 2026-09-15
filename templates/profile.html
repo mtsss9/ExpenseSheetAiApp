@@ -60,9 +60,7 @@
             {% for item in breakdown %}
             <div class="breakdown-row">
                 <span class="breakdown-label">{{ item.category }}</span>
-                <div class="breakdown-track">
-                    <div class="breakdown-bar" style="width: {{ item.percent }}%"></div>
-                </div>
+                <progress class="breakdown-bar" value="{{ item.percent }}" max="100"></progress>
                 <span class="breakdown-value">${{ "%.2f"|format(item.total) }}</span>
             </div>
             {% endfor %}
