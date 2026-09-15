@@ -24,6 +24,9 @@ def landing():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if "user_id" in session:
+        return redirect(url_for("profile"))
+
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         email = request.form.get("email", "").strip()
@@ -58,13 +61,16 @@ def register():
 
         session["user_id"] = cursor.lastrowid
         session["user_name"] = name
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("profile"))
 
     return render_template("register.html")
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if "user_id" in session:
+        return redirect(url_for("profile"))
+
     if request.method == "POST":
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
@@ -77,7 +83,7 @@ def login():
 
         session["user_id"] = user["id"]
         session["user_name"] = user["name"]
-        return redirect(url_for("dashboard"))
+        return redirect(url_for("profile"))
 
     return render_template("login.html")
 
