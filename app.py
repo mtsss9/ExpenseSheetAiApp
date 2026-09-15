@@ -128,20 +128,38 @@ def profile():
         return redirect(url_for("login"))
 
     user = get_user_by_id(session["user_id"])
+    initials = "".join(part[0].upper() for part in user["name"].split()[:2])
 
-    conn = get_db()
-    summary = conn.execute(
-        "SELECT COUNT(*) AS expense_count, COALESCE(SUM(amount), 0) AS total "
-        "FROM expenses WHERE user_id = ?",
-        (session["user_id"],),
-    ).fetchone()
-    conn.close()
+    # Step 4: static, hardcoded UI data — real queries are wired up in Step 5
+    stats = {
+        "total_spent": 342.49,
+        "transaction_count": 12,
+        "top_category": "Food",
+    }
+
+    transactions = [
+        {"date": "2026-09-12", "description": "Groceries", "category": "Food", "amount": 54.32},
+        {"date": "2026-09-10", "description": "Electricity bill", "category": "Bills", "amount": 120.00},
+        {"date": "2026-09-08", "description": "Movie night", "category": "Entertainment", "amount": 32.00},
+        {"date": "2026-09-05", "description": "Bus pass", "category": "Transport", "amount": 15.00},
+        {"date": "2026-09-02", "description": "Pharmacy", "category": "Health", "amount": 45.75},
+    ]
+
+    breakdown = [
+        {"category": "Food", "total": 120.50, "percent": 35},
+        {"category": "Bills", "total": 120.00, "percent": 35},
+        {"category": "Entertainment", "total": 32.00, "percent": 9},
+        {"category": "Transport", "total": 15.00, "percent": 4},
+        {"category": "Health", "total": 45.75, "percent": 13},
+    ]
 
     return render_template(
         "profile.html",
         user=user,
-        total=summary["total"],
-        expense_count=summary["expense_count"],
+        initials=initials,
+        stats=stats,
+        transactions=transactions,
+        breakdown=breakdown,
     )
 
 

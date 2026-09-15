@@ -755,10 +755,75 @@ a { color: inherit; text-decoration: none; }
 /* Profile                                                             */
 /* ------------------------------------------------------------------ */
 
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-section-title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin: 2.5rem 0 1rem;
+}
+
 .profile-stats {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
+}
+
+.category-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+}
+
+.breakdown-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 90px;
+    align-items: center;
+    gap: 1rem;
+}
+
+.breakdown-label {
+    color: var(--ink-soft);
+    font-size: 0.9rem;
+}
+
+.breakdown-track {
+    background: var(--border-soft);
+    border-radius: var(--radius-sm);
+    height: 10px;
+    overflow: hidden;
+}
+
+.breakdown-bar {
+    background: var(--accent);
+    height: 100%;
+    border-radius: var(--radius-sm);
+}
+
+.breakdown-value {
+    color: var(--ink-muted);
+    font-size: 0.85rem;
+    text-align: right;
 }
 
 .stat-tile {

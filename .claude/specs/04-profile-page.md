@@ -1,27 +1,30 @@
 # Spec: Profile Page
 
 ## Overview
-This feature implements a view-only profile page for logged-in users. It converts the `/profile` stub into a real route that shows the current user's account details (name, email, member-since date) and a summary of their expense activity (total spent, number of expenses). No editing capability is introduced at this stage — this is a read-only account summary, giving users a place to see their identity and activity at a glance before any account-editing or settings features exist.
+This feature replaces the `/profile` stub with a fully designed profile page showing static, hardcoded data. The goal is to establish the complete UI layout — user info card, transaction history table, summary stats, and category breakdown — before any real database queries are wired up in Step 5. Building the UI first lets the team validate the design in isolation and ensures the templates are ready for the backend-connection step.
 
 ## Depends on
-- Step 01 — Database Setup (`users` and `expenses` tables must exist)
-- Step 02 — Registration (a user must exist to have a profile)
-- Step 03 — Login and Logout (`session["user_id"]` must be set to identify the current user)
+- Step 1: Database setup (schema must exist)
+- Step 2: Registration (user accounts must be creatable)
+- Step 3: Login + Logout (session must be set; `/profile` must be a protected route)
 
 ## Routes
-- `GET /profile` — render the current user's profile with account details and expense summary — logged-in only (redirect to `/login` if no session)
+- GET /profile — render the profile page — logged-in only (redirect to /login if not authenticated)
 
 ## Database changes
-No database changes. The `users` table (Step 01) already stores `name`, `email`, and `created_at`. The `expenses` table already stores `amount` and `user_id`, which is enough to compute a summary.
+No database changes. The existing `users` and `expenses` tables are sufficient.
 
 ## Templates
-- **Create:** `templates/profile.html` — displays name, email, member-since date, total spent, and expense count
-- **Modify:** `templates/base.html` — add a "Profile" link next to "Dashboard" in the logged-in nav links block
+- Create: `templates/profile.html` — full profile page extending `base.html`; contains four sections:
+  1. **User info card** — avatar initials, name, email, member-since date (all hardcoded)
+  2. **Summary stats row** — total spent, number of transactions, top category (hardcoded)
+  3. **Transaction history table** — list of recent expenses with date, description, category badge, amount (hardcoded rows)
+  4. **Category breakdown** — per-category totals displayed as a simple list or progress-bar rows (hardcoded)
 
 ## Files to change
-- `app.py` — implement `profile()`: require login, fetch the user record and expense summary, render `profile.html`
-- `database/db.py` — add `get_user_by_id(user_id)` helper returning `id`, `name`, `email`, `created_at` (or `None`)
-- `templates/base.html` — add profile nav link
+- `app.py` — replace the `/profile` stub with a real view function that:
+  - Redirects unauthenticated users to `/login`
+  - Passes hardcoded context variables to `profile.html`
 
 ## Files to create
 - `templates/profile.html`
@@ -30,21 +33,22 @@ No database changes. The `users` table (Step 01) already stores `name`, `email`,
 No new dependencies.
 
 ## Rules for implementation
-- No SQLAlchemy or ORMs — use raw `sqlite3` via `get_db()`
-- Parameterised queries only — never use f-strings in SQL
-- Passwords hashed with werkzeug (no change needed here, but never select or display `password_hash`)
+- No SQLAlchemy or ORMs — use raw sqlite3 via `get_db()` if any DB call is ever needed
+- Parameterised queries only — never string-format SQL
+- Passwords hashed with werkzeug (no changes to auth in this step)
 - Use CSS variables — never hardcode hex values
 - All templates extend `base.html`
-- Use `url_for()` for every internal link — never hardcode paths
-- `get_user_by_id` belongs in `database/db.py`, not inline in the route
-- If `session["user_id"]` is missing, redirect to `url_for("login")` (same pattern as `dashboard()`)
-- Compute total spent and expense count in the route using data already queryable from `expenses` — do not add a new table or column for it
-- The `/profile` route must not return the raw stub string
+- No inline styles
+- Authentication guard: check `session.get("user_id")`; if absent, `redirect(url_for("login"))`
+- All data passed to the template must be hardcoded Python dicts/lists in `app.py` — no DB queries in this step
+- Category badges must use a CSS class, not inline colour styles
 
 ## Definition of done
-- [ ] Visiting `GET /profile` while logged out redirects to `/login`
-- [ ] Visiting `GET /profile` while logged in (e.g. demo@spendly.com / demo123) renders the profile page
-- [ ] The profile page shows the user's name, email, and member-since date
-- [ ] The profile page shows total amount spent and number of expenses, matching the values shown on `/dashboard`
-- [ ] The nav bar shows a "Profile" link when logged in, and it links to `/profile`
-- [ ] The `/profile` route no longer returns the raw stub string
+- [ ] Visiting `/profile` without being logged in redirects to `/login`
+- [ ] Visiting `/profile` while logged in returns HTTP 200
+- [ ] The page displays a user info card with a name and email
+- [ ] The page displays at least three summary stat values (e.g. total spent, transaction count, top category)
+- [ ] The page displays a transaction history table with at least three hardcoded rows
+- [ ] The page displays a category breakdown section with at least three categories
+- [ ] The navbar shows the logged-in state (username + logout link)
+- [ ] No hex colour values appear in `profile.html` — only CSS variables
