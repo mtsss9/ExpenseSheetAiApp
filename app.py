@@ -144,9 +144,9 @@ def profile():
     user = get_user_by_id(user_id)
     initials = "".join(part[0].upper() for part in user["name"].split()[:2])
 
-    stats = None  # TODO(subagent: summary-stats)
-    transactions = None  # TODO(subagent: transaction-history)
-    breakdown = None  # TODO(subagent: category-breakdown)
+    stats = get_summary_stats(user_id)
+    transactions = get_recent_transactions(user_id)
+    breakdown = get_category_breakdown(user_id)
 
     return render_template(
         "profile.html",
