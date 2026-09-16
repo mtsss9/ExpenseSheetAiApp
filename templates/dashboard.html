@@ -10,7 +10,7 @@
         <div class="dashboard-header">
             <h1 class="dashboard-title">Welcome back, {{ user_name }}</h1>
             <p class="dashboard-subtitle">
-                Total spent: <strong>${{ "%.2f"|format(total) }}</strong> across {{ expenses|length }} expenses
+                Total spent: <strong>₹{{ "%.2f"|format(total) }}</strong> across {{ expenses|length }} expenses
             </p>
         </div>
 
@@ -31,7 +31,7 @@
                         <td>{{ expense.date }}</td>
                         <td><span class="category-pill">{{ expense.category }}</span></td>
                         <td>{{ expense.description or "—" }}</td>
-                        <td class="amount-col">${{ "%.2f"|format(expense.amount) }}</td>
+                        <td class="amount-col">₹{{ "%.2f"|format(expense.amount) }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

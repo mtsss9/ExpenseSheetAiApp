@@ -12,14 +12,14 @@
             <div>
                 <h1 class="dashboard-title">{{ user.name }}</h1>
                 <p class="dashboard-subtitle">{{ user.email }}</p>
-                <p class="dashboard-subtitle">Member since {{ user.created_at[:10] }}</p>
+                <p class="dashboard-subtitle">Member since {{ user.member_since }}</p>
             </div>
         </div>
 
         <div class="profile-stats">
             <div class="stat-tile">
                 <span class="stat-label">Total spent</span>
-                <span class="stat-value">${{ "%.2f"|format(stats.total_spent) }}</span>
+                <span class="stat-value">₹{{ "%.2f"|format(stats.total_spent) }}</span>
             </div>
             <div class="stat-tile">
                 <span class="stat-label">Transactions</span>
@@ -48,7 +48,7 @@
                         <td>{{ transaction.date }}</td>
                         <td>{{ transaction.description }}</td>
                         <td><span class="category-pill">{{ transaction.category }}</span></td>
-                        <td class="amount-col">${{ "%.2f"|format(transaction.amount) }}</td>
+                        <td class="amount-col">₹{{ "%.2f"|format(transaction.amount) }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -59,9 +59,9 @@
         <div class="category-breakdown">
             {% for item in breakdown %}
             <div class="breakdown-row">
-                <span class="breakdown-label">{{ item.category }}</span>
-                <progress class="breakdown-bar" value="{{ item.percent }}" max="100"></progress>
-                <span class="breakdown-value">${{ "%.2f"|format(item.total) }}</span>
+                <span class="breakdown-label">{{ item.name }}</span>
+                <progress class="breakdown-bar" value="{{ item.pct }}" max="100"></progress>
+                <span class="breakdown-value">₹{{ "%.2f"|format(item.amount) }}</span>
             </div>
             {% endfor %}
         </div>
